@@ -7,7 +7,7 @@ The script serves to process the output from Qiime2 from the litter samples from
 
 # Jolie - litter
 <p align="center">
-<img src="" width="900">
+<img src="little-chickens-smart-farming-animals.webp" width="900">
 </p>
 
 # Materials and methods
