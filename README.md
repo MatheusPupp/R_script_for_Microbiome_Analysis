@@ -7,7 +7,7 @@ The script serves to process the output from Qiime2 from the litter samples from
 
 # Jolie - litter
 <p align="center">
-<img src="[bobby-chiu-beam_me_up_scotty_1000x750.jpg](https://github.com/PoultryPathologyAuburn/Jolie-litter/blob/main/bobby-chiu-beam_me_up_scotty_1000x750.jpg?raw=true)" width="900">
+<img src="" width="900">
 </p>
 
 # Materials and methods
