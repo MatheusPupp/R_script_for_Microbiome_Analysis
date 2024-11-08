@@ -77,7 +77,7 @@ result_day20 <- ancombc(
   assay.type = NULL,
   assay_name = "counts",
   rank = NULL,
-  tax_level = "Family",
+  tax_level = "Phylum",
   formula = "Water.Treatment",
   p_adj_method = "holm",
   prv_cut = 0.1,
@@ -101,12 +101,12 @@ physeq_day28@sam_data$Litter.Treatment <- factor(physeq_day28@sam_data$Litter.Tr
                                                 levels=c("Nothing", "Compost", "FormicAcidSalt"))
 
 # Day 28 analysis (both water and litter treatments)
-result_day28 <- ancombc(
+result_day28P <- ancombc(
   data = physeq_day28,
   assay.type = NULL,
   assay_name = "counts",
   rank = NULL,
-  tax_level = "Family",
+  tax_level = "Phylum",
   formula = "Water.Treatment + Litter.Treatment",
   p_adj_method = "holm",
   prv_cut = 0.1,
@@ -123,39 +123,117 @@ result_day28 <- ancombc(
   verbose = TRUE
 )
 
+# Analysis for Water Treatments only
+result_water_day28 <- ancombc(
+  data = physeq_day28,
+  assay.type = NULL,
+  assay_name = "counts",
+  rank = NULL,
+  tax_level = "Phylum",
+  formula = "Water.Treatment",   # Only Water.Treatment
+  p_adj_method = "holm",
+  prv_cut = 0.1,
+  lib_cut = 0,
+  group = "Water.Treatment",
+  struc_zero = FALSE,
+  neg_lb = FALSE,
+  tol = 1e-05,
+  max_iter = 100,
+  conserve = FALSE,
+  alpha = 0.05,
+  global = FALSE,
+  n_cl = 1,
+  verbose = TRUE
+)
+
+# Analysis for Litter Treatments only
+result_litter_day28 <- ancombc(
+  data = physeq_day28,
+  assay.type = NULL,
+  assay_name = "counts",
+  rank = NULL,
+  tax_level = "Phylum",
+  formula = "Litter.Treatment",   # Only Litter.Treatment
+  p_adj_method = "holm",
+  prv_cut = 0.1,
+  lib_cut = 0,
+  group = "Litter.Treatment",
+  struc_zero = FALSE,
+  neg_lb = FALSE,
+  tol = 1e-05,
+  max_iter = 100,
+  conserve = FALSE,
+  alpha = 0.05,
+  global = FALSE,
+  n_cl = 1,
+  verbose = TRUE
+)
+
 # Name the columns for the p-values tables
 col_name20 = c("taxon", "(Intercept)", "Water.TreatmentAcetic", "Water.TreatmentCitric")
 col_name28 = c("taxon", "(Intercept)", "Water.TreatmentAcetic", "Water.TreatmentCitric", "Litter.TreatmentCompost", "Litter.TreatmentFormicAcidSalt")
-
+col_name28_water = c("taxon", "(Intercept)", "Water.TreatmentAcetic", "Water.TreatmentCitric")
+col_name28_litter = c("taxon", "(Intercept)", "Litter.TreatmentCompost", "Litter.TreatmentFormicAcidSalt")
+  
 # ANCOMBC p-values
+#Day 20
 tab_p20 = result_day20$res$p_val
 colnames(tab_p20) = col_name20
 tab_p20 %>% 
-  datatable(caption = "P-values from the Primary Result") %>%
+  datatable(caption = "P-values from the Primary Result Day 20") %>%
   formatRound(col_name20[-1], digits = 3)
-
+#Day 28
 tab_p28 = result_day28$res$p_val
 colnames(tab_p28) = col_name28
 tab_p28 %>% 
-  datatable(caption = "P-values from the Primary Result") %>%
+  datatable(caption = "P-values from the Primary Result Day 28") %>%
   formatRound(col_name28[-1], digits = 3)
 
+tab_water_p28 = result_water_day28$res$p_val    # Only water treatments day 28
+colnames(tab_p28) = col_name28_water
+tab_water_p28 %>% 
+  datatable(caption = "P-values from the Primary Result Water") %>%
+  formatRound(col_name28_water[-1], digits = 3)
+
+tab_litter_p28 = result_litter_day28$res$p_val # Only litter treatments day 28
+colnames(tab_p28) = col_name28_litter
+tab_litter_p28 %>% 
+  datatable(caption = "P-values from the Primary Result Litter") %>%
+  formatRound(col_name28_litter[-1], digits = 3)
+
 # ANCOMBC Adjusted p-values (q_val = adjusted p-values)
+# Day 20
 tab_q20 = result_day20$res$q_val
 colnames(tab_q20) = col_name20
 tab_q20 %>% 
-  datatable(caption = "Adjusted p-values from the Primary Result") %>%
+  datatable(caption = "Adjusted p-values from the Primary Result Day 20") %>%
   formatRound(col_name20[-1], digits = 3)
 tab_q_day20_filtered <- tab_q20 %>%
   filter(`(Intercept)` < 0.05 | `Water.TreatmentAcetic` < 0.05 | `Water.TreatmentCitric` < 0.05)
-
+# Day 28
 tab_q28 = result_day28$res$q_val
 colnames(tab_q28) = col_name28
 tab_q28 %>% 
-  datatable(caption = "Adjusted p-values from the Primary Result") %>%
+  datatable(caption = "Adjusted p-values from the Primary Result Day 28") %>%
   formatRound(col_name28[-1], digits = 3)
 tab_q_day28_filtered <- tab_q28 %>%
   filter(`(Intercept)` < 0.05 | `Water.TreatmentAcetic` < 0.05 | `Water.TreatmentCitric` < 0.05 | `Litter.TreatmentCompost` < 0.05 | `Litter.TreatmentFormicAcidSalt` < 0.05)
+
+tab_water_q28 = result_water_day28$res$q_val    # Only water treatments day 28
+colnames(tab_water_q28) = col_name28_water
+tab_water_q28 %>% 
+  datatable(caption = "Adjusted p-values from the Primary Result Water Day 28") %>%
+  formatRound(col_name28_water[-1], digits = 3)
+tab_water_q_day28_filtered <- tab_water_q28 %>%
+  filter(`(Intercept)` < 0.05 | `Water.TreatmentAcetic` < 0.05 | `Water.TreatmentCitric` < 0.05)
+
+tab_litter_q28 = result_litter_day28$res$q_val    # Only litter treatments day 28
+colnames(tab_litter_q28) = col_name28_litter
+tab_litter_q28 %>% 
+  datatable(caption = "Adjusted p-values from the Primary Result Litter Day 28") %>%
+  formatRound(col_name28_litter[-1], digits = 3)
+tab_litter_q_day28_filtered <- tab_litter_q28 %>%
+  filter(`(Intercept)` < 0.05 | `Litter.TreatmentCompost` < 0.05 | `Litter.TreatmentFormicAcidSalt` < 0.05)
 
 # Filtering only lines with p-values < 0.05 for result_day20
 tab_q_day20_filtered <- tab_q20 %>%
@@ -294,12 +372,12 @@ p_litter_d28 = ggplot(data = df_fig_litter, aes(y = taxon_id, x = LFC, fill = di
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5, color = "black", size = 14), # Title font size
         panel.grid.minor.x = element_blank(),
-        axis.text.y = element_text(hjust = 1, size = 7, color = "black"),  # Taxons size and color
+        axis.text.y = element_text(hjust = 1, size = 6, color = "black"),  # Taxons size and color
         axis.text.x = element_text(size = 8, color = "black"),  # Adjusting the x-axis size and color
         strip.text = element_text(size = 12, color = "black"),  # Size and color of the title of each graphic
         strip.text.x = element_blank(), # Removing facet labels (taxon label)
         plot.margin = unit(c(1,1,1,1), "cm"), 
-        aspect.ratio = 1.5,  # Adjusting the aspect ratio for greater height
+        aspect.ratio = 3,  # Adjusting the aspect ratio for greater height
         panel.spacing = unit(1, "lines"))  # Increasing the spacing between graphics
 
 # Displaying the Litter Treatments graphic
