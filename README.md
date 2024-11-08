@@ -5,6 +5,9 @@ The script serves to process the output from Qiime2 from the litter samples from
 ### ANCOMBC tutorial page
    https://www.bioconductor.org/packages/release/bioc/vignettes/ANCOMBC/inst/doc/ANCOMBC.html
 
+### ANCOM paper
+   https://www.bioconductor.org/packages/release/bioc/manuals/ANCOMBC/man/ANCOMBC.pdf
+
 <p align="center">
 <img src="little-chickens-smart-farming-animals.webp" width="600">
 </p>
